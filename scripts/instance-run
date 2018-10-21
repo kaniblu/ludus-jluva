@@ -21,7 +21,7 @@ parser.add_argument("--codebase", default=os.path.join(ROOT_DIR, "codebase"),
                     help="directory to codebase")
 
 
-def run(args):
+def run(args, fallthrough):
     call_args = "python -m runscript --run-module --module-path".split()
     call_args.append(args.codebase)
     call_args.append(args.module)
@@ -32,9 +32,9 @@ def run(args):
         for line in f:
             line = line.rstrip()
             call_args.extend(["--args", os.path.join(instance_path, line)])
-
+    call_args.extend(fallthrough)
     subprocess.call(call_args)
     
 
 if __name__ == "__main__":
-    run(parser.parse_args())
+    run(*parser.parse_known_args())
