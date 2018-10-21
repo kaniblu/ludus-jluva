@@ -11,11 +11,12 @@ SCRIPT_PATH = os.path.realpath(__file__)
 ROOT_DIR = os.path.join(os.path.dirname(SCRIPT_PATH), "..")
 
 parser = argparse.ArgumentParser(
-    desc="remove every file or directory in the instance except those specified in .rmignore",
+    description="remove every file or directory in the instance "
+                "except those specified in .rmignore",
     formatter_class=argparse.ArgumentDefaultsHelpFormatter
 )
 parser.add_argument("instance")
-parser.add_argument("instances-dir", default=os.path.join(ROOT_DIR, "instances"))
+parser.add_argument("--instances-dir", default=os.path.join(ROOT_DIR, "instances"))
 
 
 def rmrf(path):
@@ -35,23 +36,30 @@ def load_ignores(path):
     return set(line for line in lines if line)
     
     
-def filter_ignores(filenames, ignores):
+def list_filenames(path):
+    paths = glob.glob(os.path.join(path, "*"))
+    paths = [os.path.basename(p) for p in paths]
+    return set(paths)
+
+
+def get_nonignorables(filenames, ignores):
     for ignore in ignores:
         filenames = [filename for filename in filenames if not re.match(ignore, filename)]
-    return filenames
+    return set(filenames)
 
 
 def clearun(args):
-    instance_path = os.path.join(args.instances_dir, "instances", args.instance)
-    assert os.path.exists(instance_path)
+    instance_path = os.path.join(args.instances_dir, args.instance)
+    assert os.path.exists(instance_path), \
+        f"instance '{args.instance}' does not exist"
     ignore_path = os.path.join(instance_path, ".rmignore")
     if os.path.exists(ignore_path):
         ignores = load_ignores(ignore_path)
-    filelist = set(glob.glob(os.path.join(instance_path, "*")))
-    for path in filelist - set(filter_ignores(filelist, ignores)):
-        rmrf(path)
+    filenames = list_filenames(instance_path)
+    nonignorables = get_nonignorables(filenames, ignores)
+    for filename in nonignorables:
+        rmrf(os.path.join(instance_path, filename))
 
-        
 if __name__ == "__main__":
     logging.basicConfig(level=0)
     clearun(parser.parse_args())

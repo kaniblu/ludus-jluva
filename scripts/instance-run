@@ -25,13 +25,14 @@ def run(args):
     call_args = "python -m runscript --run-module --module-path".split()
     call_args.append(args.codebase)
     call_args.append(args.module)
-    
-    arglst_path = os.path.join(args.instances_dir, args.instance, f"{args.module}.lst")
+   
+    instance_path = os.path.join(args.instances_dir, args.instance)
+    arglst_path = os.path.join(instance_path, f"{args.module}.lst")
     with open(arglst_path, "r") as f:
         for line in f:
             line = line.rstrip()
-            call_args.extend(["--args", os.path.join(save_dir, line)])
-    
+            call_args.extend(["--args", os.path.join(instance_path, line)])
+
     subprocess.call(call_args)
     
 
