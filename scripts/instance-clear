@@ -1,0 +1,57 @@
+#!/usr/bin/env python
+
+import re
+import os
+import glob
+import shutil
+import logging
+import argparse
+
+SCRIPT_PATH = os.path.realpath(__file__)
+ROOT_DIR = os.path.join(os.path.dirname(SCRIPT_PATH), "..")
+
+parser = argparse.ArgumentParser(
+    desc="remove every file or directory in the instance except those specified in .rmignore",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
+parser.add_argument("instance")
+parser.add_argument("instances-dir", default=os.path.join(ROOT_DIR, "instances"))
+
+
+def rmrf(path):
+    logging.info(f"forcefully removing everything at {path}...")
+    if not os.path.exists(path):
+        return
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+    else:
+        os.remove(path)
+        
+
+def load_ignores(path):
+    with open(path, "r") as f:
+        lines = [line.strip() for line in f]
+    lines = [line.split("#")[0].strip() for line in lines]
+    return set(line for line in lines if line)
+    
+    
+def filter_ignores(filenames, ignores):
+    for ignore in ignores:
+        filenames = [filename for filename in filenames if not re.match(ignore, filename)]
+    return filenames
+
+
+def clearun(args):
+    instance_path = os.path.join(args.instances_dir, "instances", args.instance)
+    assert os.path.exists(instance_path)
+    ignore_path = os.path.join(instance_path, ".rmignore")
+    if os.path.exists(ignore_path):
+        ignores = load_ignores(ignore_path)
+    filelist = set(glob.glob(os.path.join(instance_path, "*")))
+    for path in filelist - set(filter_ignores(filelist, ignores)):
+        rmrf(path)
+
+        
+if __name__ == "__main__":
+    logging.basicConfig(level=0)
+    clearun(parser.parse_args())

@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+import os
+import argparse
+import subprocess
+
+SCRIPT_PATH = os.path.realpath(__file__)
+ROOT_DIR = os.path.join(os.path.dirname(SCRIPT_PATH), "..")
+
+parser = argparse.ArgumentParser(
+    description="Run a specific instance with a module in the codebase. Assumes that"
+                "the list of argument files are contained in a text file with the"
+                "filename '{module}.lst'.",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
+parser.add_argument("instance")
+parser.add_argument("module")
+parser.add_argument("--instances-dir", default=os.path.join(ROOT_DIR, "instances"),
+                    help="directory to instances")
+parser.add_argument("--codebase", default=os.path.join(ROOT_DIR, "codebase"),
+                    help="directory to codebase")
+
+
+def run(args):
+    call_args = "python -m runscript --run-module --module-path".split()
+    call_args.append(args.codebase)
+    call_args.append(args.module)
+    
+    arglst_path = os.path.join(args.instances_dir, args.instance, f"{args.module}.lst")
+    with open(arglst_path, "r") as f:
+        for line in f:
+            line = line.rstrip()
+            call_args.extend(["--args", os.path.join(save_dir, line)])
+    
+    subprocess.call(call_args)
+    
+
+if __name__ == "__main__":
+    run(parser.parse_args())

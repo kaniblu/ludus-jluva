@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+
+import os
+import shutil
+import logging
+import argparse
+import subprocess
+
+SCRIPT_PATH = os.path.realpath(__file__)
+ROOT_DIR = os.path.join(os.path.dirname(SCRIPT_PATH), "..")
+
+parser = argparse.ArgumentParser(
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter
+)
+parser.add_argument("archetype")
+parser.add_argument("instance_name")
+parser.add_argument("--archetypes-dir", default=os.path.join(ROOT_DIR, "archetypes"),
+                    help="directory to archetypes")
+parser.add_argument("--instances-dir", default=os.path.join(ROOT_DIR, "instances"),
+                    help="directory to instances")
+parser.add_argument("--overwrite", action="store_true", default=False)
+
+
+def rmrf(path):
+    logging.info(f"forcefully removing everything at {path}...")
+    if not os.path.exists(path):
+        return
+    if os.path.isdir(path):
+        shutil.rmtree(path)
+    else:
+        os.remove(path)
+        
+ 
+def copyr(src, dst, overwrite=False):
+    logging.info(f"copying file or directory from {src} to {dst}...")
+    if not os.path.exists(src):
+        logging.warning(f"copy aborted since {src} does not exist")
+        return
+    if not overwrite:
+        assert not os.path.exists(dst), \
+            "copy failed: destination item exists"
+    if os.path.exists(dst):
+        rmrf(dst)
+    if os.path.isdir(src):
+        shutil.copytree(src, dst)
+    else:
+        shutil.copy(src, dst)
+
+
+def set_config(path, key, value):
+    typemap = {
+        str: "str",
+        int: "int",
+        float: "float",
+        None: "null"
+    }
+    subprocess.call(f"set-config {path} {key} {value} --type {typemap[type(value)]} -w".split())
+
+
+def createxp(args):
+    archetype_path = os.path.join(args.archetypes_dir, args.archetype)
+    new_path = os.path.join(args.instances_dir, args.instance_name)
+    assert os.path.exists(archetype_path), \
+        f"archetype path '{archetype_path}' does not exist"
+    copyr(archetype_path, new_path, overwrite=args.overwrite)
+
+
+if __name__ == "__main__":
+    createxp(parser.parse_args())
