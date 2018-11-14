@@ -1,0 +1,2 @@
+save-dir: "{%config-dir%}"
+gpu: [0]

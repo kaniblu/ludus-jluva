@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import os
+import glob
+import yaml
 import shutil
 import logging
 import argparse
@@ -57,13 +59,26 @@ def set_config(path, key, value):
     subprocess.call(f"set-config {path} {key} {value} --type {typemap[type(value)]} -w".split())
 
 
+def replace_macro(instance_dir):
+    for filename in glob.glob(os.path.join(instance_dir, "*.yml")):
+        with open(filename, "r") as f:
+            config = yaml.load(f)
+        for k in config:
+            v = config[k]
+            if isinstance(v, str):
+                v = v.replace("{%ludus-dir%}", ROOT_DIR)
+            config[k] = v
+        with open(filename, "w") as f:
+            yaml.dump(config, f, indent=2, default_flow_style=False, allow_unicode=True)
+
+
 def createxp(args):
     archetype_path = os.path.join(args.archetypes_dir, args.archetype)
     new_path = os.path.join(args.instances_dir, args.instance_name)
     assert os.path.exists(archetype_path), \
         f"archetype path '{archetype_path}' does not exist"
     copyr(archetype_path, new_path, overwrite=args.overwrite)
-
+    replace_macro(new_path)
 
 if __name__ == "__main__":
     createxp(parser.parse_args())

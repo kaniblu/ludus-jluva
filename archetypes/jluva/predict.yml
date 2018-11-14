@@ -1,0 +1,4 @@
+ckpt-path: "{save-dir}/checkpoint-e{eidx}"
+batch-size: 128
+beam-size: 10
+expand-vocab: false

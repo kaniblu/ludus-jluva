@@ -1,0 +1,7 @@
+dataset: atis
+dataset-dir: "{%ludus-dir%}/datasets/{dataset}"
+data-workers: 1
+seed: null
+unk: "<unk>"
+bos: "<bos>"
+eos: "<eos>"

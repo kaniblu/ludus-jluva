@@ -1,0 +1,4 @@
+val-dir: "{dataset-dir}/val"
+val-word-path: "{val-dir}/sents.txt"
+val-label-path: "{val-dir}/labels.txt"
+val-intent-path: "{val-dir}/intents.txt"

@@ -1,0 +1,2 @@
+test-dir: "{dataset-dir}/test"
+word-path: "{test-dir}/sents.txt"

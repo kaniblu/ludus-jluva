@@ -1,0 +1,62 @@
+type: new-cond-luvae
+vargs:
+  batch_norm: false
+  dropout: false
+  dropout_prob: 0.5
+  fusion: mlb
+  intent_decoder:
+    type: pooled-rnn-encoder
+    vargs:
+      cell:
+        type: lstm-rnn
+        vargs:
+          dropout: 0
+          dynamic: false
+          layers: 1
+      pool: max-pool
+  intent_encoder: gated-tanh
+  label_decoder:
+    type: rnn-recalling-decoder
+    vargs:
+      cell:
+        type: lstm-rnn
+        vargs:
+          dropout: 0
+          dynamic: false
+          layers: 1
+  label_encoder:
+    type: pooled-rnn-encoder
+    vargs:
+      cell:
+        type: lstm-rnn
+        vargs:
+          dropout: 0
+          dynamic: false
+          layers: 1
+      pool: max-pool
+  sampling:
+    type: bug-fixed-reparam-gaussian-sampling
+    vargs:
+      enforce_unit: true
+      loss_scale: 0.0024
+      no_variance: false
+  word_decoder:
+    type: rnn-recalling-decoder
+    vargs:
+      cell:
+        type: lstm-rnn
+        vargs:
+          dropout: 0
+          dynamic: false
+          layers: 1
+  word_dropout: 0.56
+  word_encoder:
+    type: pooled-rnn-encoder
+    vargs:
+      cell:
+        type: lstm-rnn
+        vargs:
+          dropout: 0
+          dynamic: false
+          layers: 1
+      pool: max-pool

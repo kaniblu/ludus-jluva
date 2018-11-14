@@ -1,0 +1,9 @@
+default-nonlinear: relu
+intent-dim: 100
+intent-freeze: false
+label-dim: 200
+label-freeze: false
+model-path: '{save-dir}/luvae.yml'
+word-dim: 300
+word-freeze: false
+z-dim: 256

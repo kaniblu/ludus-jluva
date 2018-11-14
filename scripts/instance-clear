@@ -17,7 +17,8 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument("instance")
 parser.add_argument("--instances-dir", default=os.path.join(ROOT_DIR, "instances"))
-
+parser.add_argument("-y", "--yes", action="store_true", default=False,
+                    help="bypass any confirmation prompts")
 
 def rmrf(path):
     logging.info(f"forcefully removing everything at {path}...")
@@ -55,8 +56,25 @@ def clearun(args):
     ignore_path = os.path.join(instance_path, ".rmignore")
     if os.path.exists(ignore_path):
         ignores = load_ignores(ignore_path)
+    else:
+        ignores = []
     filenames = list_filenames(instance_path)
     nonignorables = get_nonignorables(filenames, ignores)
+    if not args.yes and nonignorables:
+        print(f"About to delete {len(nonignorables)} files/directories.")
+        while True:
+            resp = input("Continue? (y/[n]): ").strip().lower()
+            if not resp:
+                resp = "n"
+            if resp not in "yn":
+                print("Answer 'y' or 'n'.")
+                continue
+            break
+                
+        if resp == "n":
+            print("Aborted.")
+            exit()
+
     for filename in nonignorables:
         rmrf(os.path.join(instance_path, filename))
 

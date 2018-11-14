@@ -1,0 +1,3 @@
+word-vocab: "{save-dir}/word.vocab"
+label-vocab: "{save-dir}/label.vocab"
+intent-vocab: "{save-dir}/intent.vocab"

@@ -1,0 +1,17 @@
+validate: true
+validate-generation: true
+validate-random-sampling: true
+validate-fixed-sampling: true
+validate-autoencoding-sampling: true
+validate-understanding: true
+validate-posterior-sampling: true
+val-period: 1
+num-generations: 50
+num-random-samples: 50
+num-fixed-samples: 50
+num-autoencoding-samples: 50
+num-posterior-samples: 50
+beam-size: 10
+max-length: 50
+generation-analysis-encoder: wordembed
+plot-embedding: false

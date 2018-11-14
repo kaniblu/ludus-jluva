@@ -1,0 +1,4 @@
+train-dir: "{dataset-dir}/train"
+word-path: "{train-dir}/sents.txt"
+label-path: "{train-dir}/labels.txt"
+intent-path: "{train-dir}/intents.txt"
