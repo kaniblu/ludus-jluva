@@ -1,4 +1,4 @@
-# Experimentational Framework for NLU Generation #
+# Experimental Framework for NLU Generation #
 
 ## Getting Started ##
 
