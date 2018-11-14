@@ -20,7 +20,7 @@ Setup environments:
 
 `export PATH=$(pwd)/scripts:${PATH}`
 
-Create instance directory: 
+Create the instance directory: 
 
 `mkdir instances`
 
@@ -31,7 +31,7 @@ Create an experimental instance from the archetype:
 
 `instance-create jluva atis-jluva`
 
-Configure dataset: 
+Configure the dataset option in the instance: 
 
 `config-set atis-jluva data dataset atis -w`
 
@@ -44,5 +44,5 @@ Generate NLU corpus using the trained model:
 `instance-run atis-jluva generate --eidx 97`
 
 
-The generated corpus (utterances + intents + slot labels) is saved as paths `instances/atis-jluva/(word.txt|intent.txt|label.txt)`, 
-which improves LU performances when used to augment the existing corpus for training supervised LU models.
+After above steps, the synthetic corpus (utterances + intents + slot labels) will be generated under `instances/atis-jluva` with the filenames `word.txt`, `intent.txt`, and `label.txt`. 
+Such corpus improves LU performances when used to augment the existing corpus for training supervised LU models.
